@@ -42,10 +42,3 @@ class Tokenizer():
         """Helper method to format matched delimiters with tabs."""
         matched_text = match.group().strip(' \n')
         return f" {matched_text}\t\t"
-
-    def add_tab(self, mystring):
-        mystring = mystring.group()  # this method return the string matched by re
-        mystring = mystring.strip(' ')  # ommiting the whitespace around the pucntuation
-        mystring = mystring.strip('\n') # ommiting the newline around the pucntuation
-        mystring = " " + mystring + "\t\t"  # adding a space after and before punctuation
-        return mystring
