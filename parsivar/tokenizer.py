@@ -3,7 +3,12 @@ import re
 
 class Tokenizer():
     def __init__(self):
-        pass
+        """
+        Define Regex Patterns
+        """
+        self.NUMBER_PATTERN = r"[-+]?\d*\.\d+|\d+"
+        self.SENTENCE_DELIMITERS = r'([!\.\?؟]+)[\n]*'
+        self.NEWLINE_PATTERNS = [r':\n', r';\n', r'؛\n', r'[\n]+']
 
     def tokenize_words(self, doc_string):
         token_list = doc_string.strip().split()
