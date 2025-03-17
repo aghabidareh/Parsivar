@@ -18,37 +18,30 @@ class Tokenizer():
         return [word.strip("\u200c") for word in doc_string.strip().split() if word.strip("\u200c")]
 
     def tokenize_sentences(self, doc_string):
-        #finding the numbers
-        pattern = r"[-+]?\d*\.\d+|\d+"
-        nums_list = re.findall(pattern, doc_string)
-        doc_string = re.sub(pattern, 'floatingpointnumber', doc_string)
+        """Tokenize the input document into sentences."""
+        if not doc_string:
+            return []
 
-        pattern = r'([!\.\?؟]+)[\n]*'
-        tmp = re.findall(pattern, doc_string)
-        doc_string = re.sub(pattern, self.add_tab, doc_string)
+        # Extract and replace numbers with a placeholder
+        numbers = re.findall(self.NUMBER_PATTERN, doc_string)
+        doc_string = re.sub(self.NUMBER_PATTERN, 'floatingpointnumber', doc_string)
 
-        pattern = r':\n'
-        tmp = re.findall(pattern, doc_string)
-        doc_string = re.sub(pattern, self.add_tab, doc_string)
+        # Replace sentence delimiters and newline patterns with tabs
+        doc_string = re.sub(self.SENTENCE_DELIMITERS, self._add_tab, doc_string)
+        for pattern in self.NEWLINE_PATTERNS:
+            doc_string = re.sub(pattern, self._add_tab, doc_string)
 
-        pattern = r';\n'
-        tmp = re.findall(pattern, doc_string)
-        doc_string = re.sub(pattern, self.add_tab, doc_string)
+        # Restore numbers in the document
+        for number in numbers:
+            doc_string = re.sub('floatingpointnumber', number, doc_string, 1)
 
-        pattern = r'؛\n'
-        tmp = re.findall(pattern, doc_string)
-        doc_string = re.sub(pattern, self.add_tab, doc_string)
+        # Split into sentences and filter out empty strings
+        return [sentence for sentence in doc_string.split('\t\t') if sentence]
 
-        pattern = r'[\n]+'
-        doc_string = re.sub(pattern, self.add_tab, doc_string)
-
-        for number in nums_list:
-            pattern = 'floatingpointnumber'
-            doc_string = re.sub(pattern, number, doc_string, 1)
-
-        doc_string = doc_string.split('\t\t')
-        doc_string = [x for x in doc_string if len(x) > 0]
-        return doc_string
+    def _add_tab(self, match):
+        """Helper method to format matched delimiters with tabs."""
+        matched_text = match.group().strip(' \n')
+        return f" {matched_text}\t\t"
 
     def add_tab(self, mystring):
         mystring = mystring.group()  # this method return the string matched by re
