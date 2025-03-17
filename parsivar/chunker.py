@@ -37,4 +37,5 @@ class FindChunks():
         return ' '.join(result)
 
     def chunk_sentence(self, pos_taged_tuples):
+        """Chunk a sentence based on the defined grammar."""
         return self.cp.parse(pos_taged_tuples)
