@@ -11,9 +11,11 @@ class Tokenizer():
         self.NEWLINE_PATTERNS = [r':\n', r';\n', r'؛\n', r'[\n]+']
 
     def tokenize_words(self, doc_string):
-        token_list = doc_string.strip().split()
-        token_list = [x.strip("\u200c") for x in token_list if len(x.strip("\u200c")) != 0]
-        return token_list
+        """Tokenize the input document into words."""
+        if not doc_string:
+            return []
+        # Remove zero-width non-joiner characters and split into words
+        return [word.strip("\u200c") for word in doc_string.strip().split() if word.strip("\u200c")]
 
     def tokenize_sentences(self, doc_string):
         #finding the numbers
