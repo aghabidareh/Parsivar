@@ -22,19 +22,19 @@ class FindChunks():
 
         self.cp = nltk.RegexpParser(self.grammar)
 
-    def convert_nestedtree2rawstring(self, tree, d=0):
-        s = ''
+    def convert_nested_tree_to_raw_string(self, tree, depth=0):
+        """Convert a nested tree structure into a raw string representation."""
+        result = []
         for item in tree:
             if isinstance(item, tuple):
-                s += item[0] + ' '
-            elif d >= 1:
-                news = self.convert_nestedtree2rawstring(item, d + 1)
-                s += news + ' '
+                result.append(item[0])
+            elif depth >= 1:
+                result.append(self.convert_nested_tree_to_raw_string(item, depth + 1))
             else:
                 tag = item._label
-                news = '[' + self.convert_nestedtree2rawstring(item, d + 1) + ' ' + tag + ']'
-                s += news + ' '
-        return s.strip()
+                nested_string = self.convert_nested_tree_to_raw_string(item, depth + 1)
+                result.append(f"[{nested_string} {tag}]")
+        return ' '.join(result)
 
     def chunk_sentence(self, pos_taged_tuples):
         return self.cp.parse(pos_taged_tuples)
